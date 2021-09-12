@@ -5,6 +5,9 @@ class Entity:
         self.position = position
         self.graphic = graphic
 
+    def update(self, dt):
+        pass
+
     def render(self, screen, camera: Camera):
         rect = self.graphic.get_rect(
             topleft=(

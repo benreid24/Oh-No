@@ -5,6 +5,7 @@ import pygame
 from constants import BLACK, RESOLUTION
 from entity.entity import Entity
 from camera import Camera
+from world.world import World
 
 
 def main():
@@ -13,27 +14,17 @@ def main():
     screen = pygame.display.set_mode(RESOLUTION)
     pygame.display.set_caption('Oh no')
     clock = pygame.time.Clock()
-
-    test_entity = Entity((300, 300), pygame.image.load('resources/test.png'))
-    camera = Camera()
     ms = 0
+
+    world = World()
 
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
 
-        # update game logic
-        camera.update(ms)
-
-        screen.fill(BLACK)
-        
-        # render scene
-        test_entity.render(screen, camera)
-
-        pygame.display.flip()
-
-        # ensure fps
+        world.update(ms / 1000)
+        world.render(screen)
         ms = clock.tick(60)  # 60 fps
 
 
