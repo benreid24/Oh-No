@@ -27,14 +27,5 @@ def main():
         world.render(screen)
         ms = clock.tick(60)  # 60 fps
 
-def cos_angle(angle):
-    deg_angle = angle * 180 / pi
-    return cos(deg_angle)
-
-def sin_angle(angle):
-    deg_angle = angle * 180 / pi
-    return sin(deg_angle)
-
-
 if __name__ == '__main__':
     main()
