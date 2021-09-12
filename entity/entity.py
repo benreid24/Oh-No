@@ -4,6 +4,7 @@ class Entity:
     def __init__(self, position, graphic):
         self.position = position
         self.graphic = graphic
+        self.alive = True
 
     def update(self, dt):
         pass
