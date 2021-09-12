@@ -1,0 +1,2 @@
+BLACK = 0, 0, 0
+RESOLUTION = 800, 600

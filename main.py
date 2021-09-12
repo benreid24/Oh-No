@@ -2,16 +2,21 @@ import sys
 
 import pygame
 
-BLACK = 0, 0, 0
+from constants import BLACK, RESOLUTION
+from entity.entity import Entity
+from camera import Camera
 
 
 def main():
     pygame.init()
 
-    resolution = 800, 600
-    screen = pygame.display.set_mode(resolution)
+    screen = pygame.display.set_mode(RESOLUTION)
     pygame.display.set_caption('Oh no')
     clock = pygame.time.Clock()
+
+    test_entity = Entity((300, 300), pygame.image.load('resources/test.png'))
+    camera = Camera()
+    ms = 0
 
     while True:
         for event in pygame.event.get():
@@ -19,13 +24,17 @@ def main():
                 sys.exit()
 
         # update game logic
+        camera.update(ms)
 
         screen.fill(BLACK)
+        
         # render scene
+        test_entity.render(screen, camera)
+
         pygame.display.flip()
 
         # ensure fps
-        clock.tick(60)  # 60 fps
+        ms = clock.tick(60)  # 60 fps
 
 
 if __name__ == '__main__':
