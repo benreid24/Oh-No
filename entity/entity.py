@@ -1,9 +1,8 @@
 from camera import Camera
-import math
-import helpers.py
+from helpers import cos_angle, sin_angle
 
 class Entity:
-    def __init__(self, position, angle = 180, graphic):
+    def __init__(self, position, angle, graphic):
         self.position = [position[0], position[1]]
         self.graphic = graphic
         self.angle = angle
@@ -14,7 +13,7 @@ class Entity:
 
     def update(self, dt):
         pass
-    
+
     def update_physics(self, rotate_rate, accel_rate, dt):
         self._position(dt)
         self.velocity_x += self.accel_x * dt
