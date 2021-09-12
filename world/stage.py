@@ -9,6 +9,6 @@ class Stage:
 
     def active(self):
         for base in self.spawned_bases:
-            if base.alive():
+            if base.alive:
                 return True
         return False
