@@ -2,9 +2,7 @@ import sys
 
 import pygame
 
-from constants import BLACK, RESOLUTION
-from entity.entity import Entity
-from camera import Camera
+from constants import RESOLUTION
 from world.world import World
 import math
 
@@ -23,7 +21,9 @@ def main():
             if event.type == pygame.QUIT:
                 sys.exit()
 
-        world.update(ms / 1000)
+        if not world.update(ms / 1000):
+            # TODO - victory screen
+            break
         world.render(screen)
         ms = clock.tick(60)  # 60 fps
 

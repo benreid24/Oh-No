@@ -10,6 +10,7 @@ class Entity:
         self.velocity_y = 0
         self.accel_x = 0
         self.accel_y = 0
+        self.alive = True
 
     def update(self, dt):
         pass
