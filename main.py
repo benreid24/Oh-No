@@ -4,7 +4,7 @@ import pygame
 
 from constants import RESOLUTION
 from world.world import World
-
+import math
 
 def main():
     pygame.init()
@@ -26,7 +26,6 @@ def main():
             break
         world.render(screen)
         ms = clock.tick(60)  # 60 fps
-
 
 if __name__ == '__main__':
     main()
