@@ -2,33 +2,21 @@ from camera import Camera
 import pygame
 
 from camera import Camera
+from component.position import Position
 from entity.entity import Entity
-from .stage import Stage
-from .stages.stage1 import Stage1
 from constants import BLACK
 
 class World:
     def __init__(self) -> None:
-        self.stages = [Stage1()]
-        self.player = Entity((300, 300), pygame.image.load('resources/player_ship.png'))
+        self.player = Entity(Position(300, 300, 0), pygame.image.load('resources/player_ship.png'))
         self.player_lives = 3
         self.entities = [self.player]
         self.camera = Camera(self.player)
 
-        self.stages[0].initialize(self)
-
-    def update(self, dt):
+    def update(self, dt: float):
         for entity in self.entities:
             entity.update(dt)
         self.camera.update(dt)
-
-        if not self.stages[0].active():
-            self.stages.pop(0)
-            if not self.stages:
-                return False
-            else:
-                self.entities = [self.player]
-                self.stages[0].initialize(self)
 
         return True
 
