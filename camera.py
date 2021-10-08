@@ -27,3 +27,7 @@ class Camera:
             pos.x - self.position.x,
             pos.y - self.position.y
         )
+
+    def get_area(self):
+        # type: () -> Tuple[float, float, float, float]
+        return (self.position.x, self.position.y, RESOLUTION[0], RESOLUTION[1])
