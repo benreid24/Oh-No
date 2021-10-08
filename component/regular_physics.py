@@ -1,3 +1,5 @@
+import math
+
 from entity.entity import Entity
 from .physics import Physics
 from .position import Vector
@@ -20,3 +22,9 @@ class RegularPhysics(Physics):
 
         # Vf = Vi + a * t
         self.velocity += adt
+
+    def set_acceleration(self, amount, direction):
+        # type: (float, float) -> None
+        direction -= 90 # we want 0deg to be pointing up
+        self.acceleration.x = amount * math.cos(direction / 180 * math.pi)
+        self.acceleration.y = amount * math.sin(direction / 180 * math.pi)
