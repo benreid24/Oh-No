@@ -10,7 +10,8 @@ from component.image_graphic import ImageGraphic
 from component.regular_physics import RegularPhysics
 from component.ship_stats import ShipStats
 from entity.entity import Entity
-from constants import BLACK
+from constants import BLACK, RESOLUTION
+from .starfield import Starfield
 
 class World:
     """
@@ -24,7 +25,8 @@ class World:
         self.player.components[Physics] = RegularPhysics()
         self.player_lives = 3
         self.entities = [self.player]
-        self.camera = Camera()
+        self.camera = Camera(self.player)
+        self.stars = Starfield(300, self.camera.get_area())
 
     def update(self, dt):
         # type: (float) -> None
@@ -32,6 +34,7 @@ class World:
         for entity in self.entities:
             entity.update(dt)
         self.camera.update(dt)
+        self.stars.update(dt)
 
         return True
 
@@ -39,6 +42,7 @@ class World:
         # type: (any) -> None
 
         screen.fill(BLACK)
+        self.stars.render(screen, self.camera)
         for entity in self.entities:
             entity.render(screen, self.camera)
         pygame.display.flip()

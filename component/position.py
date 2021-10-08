@@ -1,8 +1,18 @@
+from typing import Tuple
+
+
 class Vector:
     def __init__(self, x, y):
         # type: (float, float) -> None
         self.x = x
         self.y = y
+
+    def within(self, region):
+        # type: (Tuple[float, float, float, float]) -> bool
+        return (
+            self.x >= region[0] and self.x <= region[0] + region[2] and
+            self.y >= region[1] and self.y <= region[1] + region[3]
+        )
 
     def __add__(self, vec):
         # type: (Vector) -> Vector
