@@ -4,7 +4,7 @@ import pygame
 
 from constants import RESOLUTION
 from world.world import World
-import math
+
 
 def main():
     pygame.init()
@@ -21,11 +21,11 @@ def main():
             if event.type == pygame.QUIT:
                 sys.exit()
 
-        if not world.update(ms / 1000):
-            # TODO - victory screen
-            break
+        world.update(ms / 1000)
+
         world.render(screen)
         ms = clock.tick(60)  # 60 fps
+
 
 if __name__ == '__main__':
     main()
