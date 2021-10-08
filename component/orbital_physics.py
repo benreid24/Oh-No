@@ -19,7 +19,7 @@ class OrbitalPhysics(Physics):
         dy = parent.position.y - owner.position.y
         self.radius = math.sqrt(dx*dx + dy*dy)
         self.phase = math.atan2(dy, dx)
-        self._direction = 1 if clockwise else 0
+        self._direction = -1 if clockwise else 1
 
         circumfrence = 2 * math.pi * self.radius
         orbital_velocity = math.sqrt(parent.components[Collidable].mass * G / self.radius)

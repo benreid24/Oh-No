@@ -8,8 +8,11 @@ class Vector:
         # type: (Vector) -> Vector
         return Vector(self.x + vec.x, self.y + vec.y)
 
-
     def __mul__(self, s):
+        # type: (float) -> Vector
+        return Vector(self.x * s, self.y * s)
+
+    def __rmul__(self, s):
         # type: (float) -> Vector
         return Vector(self.x * s, self.y * s)
 

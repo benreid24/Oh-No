@@ -20,4 +20,8 @@ class ImageGraphic(Graphics):
         rect = self.image.get_rect(
             topleft=camera.transform(owner.position)
         )
-        screen.blit(self.image, rect)
+        center = rect.center
+        rotated_image = pygame.transform.rotate(self.image, -owner.position.angle)
+        rotated_rect = rotated_image.get_rect(center=center)
+
+        screen.blit(rotated_image, rotated_rect)

@@ -7,7 +7,7 @@ from component.position import Position
 class Camera:
     # TODO - do we want to support offsets, scaling, or rotating?
     
-    def __init__(self, entity):
+    def __init__(self, entity=None):
         from entity.entity import Entity
         # type: (Entity) -> None
 

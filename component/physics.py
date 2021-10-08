@@ -14,3 +14,7 @@ class Physics(Component):
         # type: (float, Entity) -> None
 
         return super().update(dt, owner)
+
+    def set_acceleration(self, amount, direction):
+        # type: (float, float) -> None
+        pass
