@@ -1,4 +1,4 @@
-from typing import List
+from typing import Type, Dict
 
 from camera import Camera
 from component.position import Position
@@ -16,23 +16,20 @@ class Entity:
         # type: (Position, Graphics) -> None
 
         self.position = position
-        self.graphic = graphic
         self.alive = True
-        self.components: List[Component] = []
-        self.controller = Controller()
-        self.physics = Physics()
+        self.components: Dict[Type, Component] = {
+            Controller: Controller(),
+            Physics: Physics(),
+            Graphics: graphic
+        }
 
     def update(self, dt):
         # type: (float) -> None
 
-        self.controller.update(dt, self)
-        self.physics.update(dt, self)
-        self.graphic.update(dt, self)
-
-        for component in self.components:
+        for _, component in self.components.items():
             component.update(dt, self)
 
     def render(self, screen, camera):
         # type: (any, Camera) -> None
 
-        self.graphic.render(screen, camera, self)
+        self.components[Graphics].render(screen, camera, self)
