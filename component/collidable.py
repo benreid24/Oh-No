@@ -59,13 +59,14 @@ class BoundingArea:
 
 
 class Collidable(Component):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, bounds):
+        # type: (BoundingArea) -> None
+        self.bounds = bounds
 
     def update(self, dt, owner):
         # type: (float, Entity) -> None
-        return super().update(dt, owner)
+        self.bounds.center = owner.position
 
-    
-
-    
+    def is_colliding(self, other):
+        # type: (Collidable) -> bool
+        return self.bounds.is_colliding(other.bounds)
