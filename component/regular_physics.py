@@ -6,6 +6,14 @@ from .position import Vector
 from .ship_stats import ShipStats
 
 
+def _same_sign(r, l):
+    if l < 0 and r > 0:
+        return False
+    if l > 0 and r < 0:
+        return False
+    return True
+
+
 class RegularPhysics(Physics):
     def __init__(self, velocity=Vector(0,0), accel=Vector(0,0)):
         # type: (Vector, Vector) -> None
@@ -35,6 +43,12 @@ class RegularPhysics(Physics):
         # decay speed if not accelerating
         if self.acceleration.mag_sqrd() < 0.5:
             self.velocity *= 0.95
+        
+        # make controls feel better
+        if not _same_sign(self.velocity.x, self.acceleration.x):
+            self.velocity.x *= 0.97
+        if not _same_sign(self.velocity.y, self.acceleration.y):
+            self.velocity.y *= 0.97
 
     def set_acceleration(self, amount, direction):
         # type: (float, float) -> None
