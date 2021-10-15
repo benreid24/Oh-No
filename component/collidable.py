@@ -13,9 +13,9 @@ class Collidable(Component):
     def __init__(self, type, mass=1, width=0, height=0, radius=0):
         # type: (Collidable.BoundType, float, float, float, float) -> None
 
+        self.mass = mass
         self.center = Vector(0, 0)
         self.type = type
-        self.mass = mass
         self.width = width
         self.height = height
         self.radius = radius

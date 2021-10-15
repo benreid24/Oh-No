@@ -15,7 +15,8 @@ def main():
     ms = 0
 
     world = World()
-
+    world.generate_world()
+    
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
