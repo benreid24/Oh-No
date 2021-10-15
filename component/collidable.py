@@ -11,12 +11,11 @@ class BoundingArea:
         Box = 1
         Circle = 2
 
-    def __init__(self, type, mass=1, width=0, height=0, radius=0):
-        # type: (BoundingArea.BoundType, float, float, float, float) -> None
+    def __init__(self, type, width=0, height=0, radius=0):
+        # type: (BoundingArea.BoundType, float, float, float) -> None
 
         self.center = Vector(0, 0)
         self.type = type
-        self.mass = mass
         self.width = width
         self.height = height
         self.radius = radius
@@ -59,9 +58,10 @@ class BoundingArea:
 
 
 class Collidable(Component):
-    def __init__(self, bounds):
-        # type: (BoundingArea) -> None
+    def __init__(self, bounds, mass=1):
+        # type: (BoundingArea, float) -> None
         self.bounds = bounds
+        self.mass = mass
 
     def update(self, dt, owner):
         # type: (float, Entity) -> None
