@@ -16,7 +16,7 @@ from component.ship_stats import ShipStats
 from entity.entity import Entity
 from constants import BLACK
 from .starfield import Starfield
-from component.collidable import Collidable, BoundingArea
+from component.collidable import Collidable
 
 class World:
     """
@@ -62,7 +62,7 @@ class World:
         star_radius = 5
         star_mass = 5
         star = Entity(position = Position(0,0,0), graphic = ImageGraphic('resources/bases/red_base_1.png'))
-        star.components[Collidable] = Collidable(BoundingArea(BoundingArea.BoundType.Circle, radius = star_radius), mass = star_mass)
+        star.components[Collidable] = Collidable(Collidable.BoundType.Circle, radius = star_radius, mass = star_mass)
         self.entities.append(star)
         p_min = star_radius * 1.5
         p_max = 35
@@ -78,7 +78,7 @@ class World:
             p_x = math.cos(p_angle_r)*p_radius
             p_y = math.sin(p_angle_r)*p_radius
             planet = Entity(position = Position(p_x,p_y,p_angle), graphic = ImageGraphic('resources/bases/red_base_1.png'))
-            planet.components[Collidable] = Collidable(BoundingArea(BoundingArea.BoundType.Circle, radius = p_radius), mass = p_mass)
+            planet.components[Collidable] = Collidable(Collidable.BoundType.Circle, radius = p_radius, mass = p_mass)
             planet.components[Physics] = OrbitalPhysics(parent = star, owner = planet, clockwise = system_rotation)
             planet_list.append(planet)
             self.entities.append(planet)
@@ -94,6 +94,6 @@ class World:
                 m_x = p_x + math.cos(m_angle_r)*m_radius
                 m_y = p_y + math.sin(m_angle_r)*m_radius
                 moon = Entity(position = Position(m_x, m_y, m_angle), graphic = ImageGraphic('resources/bases/red_base_1.png'))
-                planet.components[Collidable] = Collidable(BoundingArea(BoundingArea.BoundType.Circle, radius = m_radius), mass = m_mass)
+                planet.components[Collidable] = Collidable(Collidable.BoundType.Circle, radius = m_radius, mass = m_mass)
                 planet.components[Physics] = OrbitalPhysics(parent = planet, owner = moon, clockwise = system_rotation)
                 self.entities.append(moon)
