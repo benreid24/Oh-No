@@ -14,6 +14,9 @@ class Vector:
             self.y >= region[1] and self.y <= region[1] + region[3]
         )
 
+    def mag_sqrd(self):
+        return self.x * self.x + self.y * self.y
+
     def __add__(self, vec):
         # type: (Vector) -> Vector
         return Vector(self.x + vec.x, self.y + vec.y)

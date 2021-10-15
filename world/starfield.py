@@ -89,7 +89,7 @@ class Starfield:
                 EXTRA_SPACE
             ),
             (
-                region[0] + region[1],
+                region[0] + region[2],
                 region[1],
                 EXTRA_SPACE,
                 region[3] + EXTRA_SPACE

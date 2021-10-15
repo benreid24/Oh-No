@@ -18,7 +18,7 @@ class ImageGraphic(Graphics):
         # type: (any, Camera, Entity) -> None
 
         rect = self.image.get_rect(
-            topleft=camera.transform(owner.position)
+            center=camera.transform(owner.position)
         )
         center = rect.center
         rotated_image = pygame.transform.rotate(self.image, -owner.position.angle)
