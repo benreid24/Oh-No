@@ -1,0 +1,12 @@
+Map_Size: 100,000 x 100,000 px
+Sun_Radius: 425 px
+
+Planet_Count: ~ Binomial(n=5,p=.5) + 5 -> Range: 5-10
+Planet_Radius: ~ int(Uniform(142 px,182 px))
+Planet_Distance: ~ int(Uniform(3600 px,4900 px))
+
+Moon_Count: ~ Binomial(n=3,p=.3) -> Range: 0-3
+Moon_Radius: ~ int(Uniform(int(p_radius/3) - 10, int(p_radius/3) + 10))
+Moon_Distance: ~ int(Uniform(300 px, 600 px))
+
+Planet/Moon_Rad_Angle: ~ uniform(0 degrees, 360 degrees)
