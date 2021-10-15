@@ -1,10 +1,11 @@
 import math
-from random import choice, uniform
+from random import choice, uniform, randrange
 
 import pygame
 import scipy.stats as stats
 
 from camera import Camera
+from component.circle_graphic import CircleGraphic
 from component.controller import Controller
 from component.local_controller import LocalController
 from component.orbital_physics import OrbitalPhysics
@@ -61,14 +62,14 @@ class World:
         star_count = 1
         star_radius = 425
         star_mass = 5
-        star = Entity(position = Position(0,0,0), graphic = ImageGraphic('resources/bases/red_base_1.png'))
+        g_color = randrange(168,253)
+        star = Entity(position = Position(0,0,0), graphic = CircleGraphic((252,g_color,20),star_radius))
         star.components[Collidable] = Collidable(Collidable.BoundType.Circle, radius = star_radius, mass = star_mass)
         self.entities.append(star)
         prad_min = 142
         prad_max = 182
         pdist_min = 3600
         pdist_max = 4900
-
         planet_count = int(stats.binom.rvs(n = 5, p = .5,size = 1)[0] + 5)
         planet_list = []
         p_tot_dist = 0
@@ -81,9 +82,12 @@ class World:
             p_mass = 2
             p_x = math.cos(p_angle_r)*p_tot_dist
             p_y = math.sin(p_angle_r)*p_tot_dist
-            planet = Entity(position = Position(p_x,p_y,p_angle), graphic = ImageGraphic('resources/bases/red_base_1.png'))
+            r_color = randrange(60,220)
+            g_color = randrange(60,220)
+            b_color = randrange(60,220)
+            planet = Entity(position = Position(p_x,p_y,p_angle), graphic = CircleGraphic((r_color,g_color,b_color),p_radius))
             planet.components[Collidable] = Collidable(Collidable.BoundType.Circle, radius = p_radius, mass = p_mass)
-            planet.components[Physics] = OrbitalPhysics(parent = star, owner = planet, clockwise = system_rotation)
+            #planet.components[Physics] = OrbitalPhysics(parent = star, owner = planet, clockwise = system_rotation)
             planet_list.append(planet)
             self.entities.append(planet)
             p_moon_count = stats.binom.rvs(n = 3, p = .3,size = 1)[0] 
@@ -101,7 +105,10 @@ class World:
                 m_mass = .2
                 m_x = p_x + math.cos(m_angle_r)*m_tot_dist
                 m_y = p_y + math.sin(m_angle_r)*m_tot_dist
-                moon = Entity(position = Position(m_x, m_y, m_angle), graphic = ImageGraphic('resources/bases/red_base_1.png'))
+                moon = Entity(position = Position(m_x, m_y, m_angle), graphic = CircleGraphic((240,234,234),m_radius))
                 planet.components[Collidable] = Collidable(Collidable.BoundType.Circle, radius = m_radius, mass = m_mass)
-                planet.components[Physics] = OrbitalPhysics(parent = planet, owner = moon, clockwise = system_rotation)
+                #planet.components[Physics] = OrbitalPhysics(parent = planet, owner = moon, clockwise = system_rotation)
                 self.entities.append(moon)
+
+        #self.player.position.x = planet_list[0].position.x
+        #self.player.position.y = planet_list[0].position.y
