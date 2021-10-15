@@ -31,7 +31,7 @@ class World:
         self.player_lives = 3
         self.entities = [self.player]
         self.camera = Camera(self.player)
-        self.stars = Starfield(300, self.camera.get_area())
+        self.stars = Starfield(100, self.camera.get_area())
 
     def update(self, dt):
         # type: (float) -> None

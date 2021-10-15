@@ -8,7 +8,7 @@ from constants import WHITE
 from camera import Camera
 from component.position import Vector
 
-EXTRA_SPACE = 100
+EXTRA_SPACE = 200
 
 
 class Star:
@@ -38,8 +38,8 @@ class Starfield:
         # type: (Tuple[float, float, float, float]) -> Star
         return Star(
             Vector(
-                uniform(region[0]-EXTRA_SPACE, region[0] + region[2] + EXTRA_SPACE),
-                uniform(region[1]-EXTRA_SPACE, region[1] + region[3] + EXTRA_SPACE)
+                uniform(region[0], region[0] + region[2]),
+                uniform(region[1], region[1] + region[3])
             ),
             uniform(0.5, 3),
             uniform(0, 1),
