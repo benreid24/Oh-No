@@ -31,4 +31,7 @@ class OrbitalPhysics(Physics):
         self.phase += dt * self.angular_velocity * self._direction
         owner.position.x = self.parent.position.x + math.cos(self.phase) * self.radius
         owner.position.y = self.parent.position.y + math.sin(self.phase) * self.radius
-        
+        if self.phase > 2*math.pi:
+            self.phase -= 2*math.pi
+        elif self.phase < 0:
+            self.phase += 2*math.pi

@@ -11,12 +11,13 @@ def main():
 
     screen = pygame.display.set_mode(RESOLUTION)
     pygame.display.set_caption('Oh no')
-    clock = pygame.time.Clock()
-    ms = 0
 
     world = World()
     world.generate_world()
     
+    clock = pygame.time.Clock()
+    ms = 0
+
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
