@@ -1,10 +1,12 @@
 from typing import Any, List, Tuple
 
-from pygame.draw import rect as draw_Rect
+from pygame.draw import rect as draw_rect
 from camera import Camera
-from component.position import Vector
+from component.circle_graphic import CircleGraphic
+from component.orbital_physics import OrbitalPhysics
+from component.position import Position, Vector
 
-from constants import MINIMAP_BACKGROUND, MINIMAP_SIZE, SOLAR_SYSTEM_SIZE
+from constants import LIGHT_ORANGE, MINIMAP_BACKGROUND, MINIMAP_SIZE, SOLAR_SYSTEM_SIZE
 from event.bus import EventBus
 from event.listener import EventListener
 from event.events.entity_spawn import EntitySpawnEvent
@@ -42,9 +44,17 @@ class Minimap:
         self._camera.set_render_region(area)
         self._camera.set_entity_scale(Vector(DEFAULT_SIZE_SCALE, DEFAULT_SIZE_SCALE))
 
-        draw_Rect(surface, MINIMAP_BACKGROUND, area)
+        dummy = Entity(Position(0, 0), Graphics())
+        circle = CircleGraphic(LIGHT_ORANGE, 1)
+
+        draw_rect(surface, MINIMAP_BACKGROUND, area)
         for entity in self._entities:
             if entity.components[ShowsOnMinimap].render_override:
                 entity.components[ShowsOnMinimap].render_override.render(surface, self._camera, entity)
             else:    
                 entity.components[Graphics].render(surface, self._camera, entity)
+            
+            if OrbitalPhysics in entity.components:
+                p: OrbitalPhysics = entity.components[OrbitalPhysics]
+                circle.radius = p.radius
+                circle.render(surface, self._camera, dummy)
