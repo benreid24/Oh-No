@@ -28,7 +28,7 @@ class Star:
         pygame.draw.circle(
             surface,
             WHITE,
-            camera.transform(self.position),
+            camera.transform_point(self.position),
             max(self.radius + self.rad_var * math.cos(self.t * self.rad_freq), 1)
         )
 
@@ -67,7 +67,7 @@ class Starfield:
 
     def render(self, surface, camera):
         # type: (any, Camera) -> None
-        r = camera.get_area()
+        r = camera.get_visible_area()
         self.region = (
             r[0] - EXTRA_SPACE,
             r[1] - EXTRA_SPACE,

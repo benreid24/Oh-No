@@ -12,14 +12,21 @@ class CircleGraphic(Graphics):
     Basic circle graphic
     """
 
-    def __init__(self, color, radius):
-        # type: (Tuple[int,int,int], int) -> None
+    def __init__(self, color, radius, outline=0):
+        # type: (Tuple[int,int,int], int, int) -> None
 
         super().__init__()
         self.color = color
         self.radius = radius
+        self.outline = outline
 
     def render(self, screen, camera, owner):
         # type: (any, Camera, Entity) -> None
 
-        pygame.draw.circle(screen, self.color, camera.transform(owner.position), self.radius)
+        pygame.draw.circle(
+            screen,
+            self.color,
+            camera.transform_point(owner.position),
+            camera.transform_entity_scalar(owner, self.radius),
+            width=self.outline
+        )

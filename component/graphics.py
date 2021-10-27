@@ -1,5 +1,4 @@
 from .component import Component
-from camera import Camera
 
 
 class Graphics(Component):
@@ -17,6 +16,7 @@ class Graphics(Component):
 
     def render(self, screen, camera, owner):
         from entity.entity import Entity
+        from camera import Camera
         # type: (any, Camera, Entity) -> None
         pass
     

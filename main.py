@@ -2,18 +2,19 @@ import sys
 
 import pygame
 
-from constants import RESOLUTION
+from constants import WINDOW_RESOLUTION
 from world.world import World
 
 
 def main():
     pygame.init()
 
-    screen = pygame.display.set_mode(RESOLUTION)
+    screen = pygame.display.set_mode(WINDOW_RESOLUTION)
     pygame.display.set_caption('Oh no')
 
     world = World()
     world.generate_world()
+    world.spawn_player()
     
     clock = pygame.time.Clock()
     ms = 0
