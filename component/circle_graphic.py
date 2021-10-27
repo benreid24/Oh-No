@@ -22,4 +22,9 @@ class CircleGraphic(Graphics):
     def render(self, screen, camera, owner):
         # type: (any, Camera, Entity) -> None
 
-        pygame.draw.circle(screen, self.color, camera.transform(owner.position), self.radius)
+        pygame.draw.circle(
+            screen,
+            self.color,
+            camera.transform_point(owner.position),
+            camera.transform_entity_scalar(owner, self.radius)
+        )

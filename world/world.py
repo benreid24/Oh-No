@@ -1,5 +1,6 @@
 import math
 from random import choice, uniform, randrange
+from typing import List
 
 import pygame
 import scipy.stats as stats
@@ -7,7 +8,9 @@ import scipy.stats as stats
 from camera import Camera
 from component.circle_graphic import CircleGraphic
 from component.controller import Controller
+from component.flashing_graphic import FlashingGraphic
 from component.local_controller import LocalController
+from component.minimap import ShowsOnMinimap
 from component.orbital_physics import OrbitalPhysics
 from component.physics import Physics
 from component.position import Position, Vector
@@ -15,9 +18,12 @@ from component.image_graphic import ImageGraphic
 from component.regular_physics import RegularPhysics
 from component.ship_stats import ShipStats
 from entity.entity import Entity
-from constants import BLACK
+from constants import BLACK, DEFAULT_VIEWPORT, MINIMAP_SIZE, SIDE_PANEL_BACKGROUND, SIDE_PANEL_BORDER, SIDE_PANEL_SIZE, WHITE, WINDOW_RESOLUTION
+from event.events.entity_spawn import EntitySpawnEvent
+from world.minimap import Minimap
 from .starfield import Starfield
 from component.collidable import Collidable
+from event.bus import EventBus
 
 class World:
     """
@@ -25,14 +31,36 @@ class World:
     """
 
     def __init__(self):
+        self.entities = [] # type: List[Entity]
+        self.event_bus = EventBus()
+        self.minimap = Minimap(self.event_bus)
+
+        self.world_clip = 0, 0, DEFAULT_VIEWPORT[0], DEFAULT_VIEWPORT[1]
+        self.side_panel_clip = DEFAULT_VIEWPORT[0], 0, SIDE_PANEL_SIZE[0], SIDE_PANEL_SIZE[1]
+        self.side_panel_border = (
+            self.side_panel_clip[0] - 2,
+            self.side_panel_clip[1],
+            self.side_panel_clip[2],
+            self.side_panel_clip[3]
+        )
+        self.minimap_clip = (
+            DEFAULT_VIEWPORT[0],
+            WINDOW_RESOLUTION[1] - MINIMAP_SIZE[1],
+            MINIMAP_SIZE[0],
+            MINIMAP_SIZE[1]
+        )
+
         self.player = Entity(Position(300, 300, 0), ImageGraphic('resources/player_ship.png'))
         self.player.components[Controller] = LocalController()
         self.player.components[ShipStats] = ShipStats()
         self.player.components[Physics] = RegularPhysics()
+        self.player.components[ShowsOnMinimap] = ShowsOnMinimap(
+            render_override=FlashingGraphic(0.4, CircleGraphic(WHITE, 145))
+        )
         self.player_lives = 3
-        self.entities = [self.player]
-        self.camera = Camera(self.player)
-        self.stars = Starfield(100, self.camera.get_area())
+
+        self.camera = Camera()
+        self.stars = Starfield(100, self.camera.get_visible_area())
 
     def update(self, dt):
         # type: (float) -> None
@@ -47,15 +75,34 @@ class World:
     def render(self, screen):
         # type: (any) -> None
 
+        screen.set_clip(None)
         screen.fill(BLACK)
+        
+        screen.set_clip(self.world_clip)
         self.stars.render(screen, self.camera)
         for entity in self.entities:
             entity.render(screen, self.camera)
+
+        # screen.set_clip(None)
+        pygame.draw.rect(screen, SIDE_PANEL_BORDER, self.side_panel_border, width=2)
+        screen.set_clip(self.side_panel_clip)
+        pygame.draw.rect(screen, SIDE_PANEL_BACKGROUND, self.side_panel_clip)
+
+        screen.set_clip(self.minimap_clip)
+        self.minimap.render(screen, self.minimap_clip)
+
         pygame.display.flip()
 
     def spawn_entity(self, entity):
         # type: (Entity) -> None
         self.entities.append(entity)
+        self.event_bus.push(EntitySpawnEvent, EntitySpawnEvent(entity))
+
+    def spawn_player(self):
+        # type: () -> None
+        self.spawn_entity(self.player)
+        self.camera = Camera(self.player)
+        self.stars = Starfield(100, self.camera.get_visible_area())
 
     def generate_world(self):
         system_rotation = choice([True, False])
@@ -64,8 +111,9 @@ class World:
         star_mass = 95_625_000
         g_color = randrange(168,253)
         star = Entity(position = Position(0,0,0), graphic = CircleGraphic((252,g_color,20),star_radius))
+        star.components[ShowsOnMinimap] = ShowsOnMinimap(0.6)
         star.components[Collidable] = Collidable(Collidable.BoundType.Circle, radius = star_radius, mass = star_mass)
-        self.entities.append(star)
+        self.spawn_entity(star)
         prad_min = 142
         prad_max = 182
         pdist_min = 3600
@@ -86,10 +134,11 @@ class World:
             g_color = randrange(60,220)
             b_color = randrange(60,220)
             planet = Entity(position = Position(p_x,p_y,p_angle), graphic = CircleGraphic((r_color,g_color,b_color),p_radius))
+            planet.components[ShowsOnMinimap] = ShowsOnMinimap()
             planet.components[Collidable] = Collidable(Collidable.BoundType.Circle, radius = p_radius, mass = p_mass)
             planet.components[Physics] = OrbitalPhysics(parent = star, owner = planet, clockwise = system_rotation)
             planet_list.append(planet)
-            self.entities.append(planet)
+            self.spawn_entity(planet)
             p_moon_count = stats.binom.rvs(n = 3, p = .3,size = 1)[0] 
             mrad_min = int(p_radius/3) - 10
             mrad_max = int(p_radius/3) + 10
@@ -108,7 +157,8 @@ class World:
                 moon = Entity(position = Position(m_x, m_y, m_angle), graphic = CircleGraphic((240,234,234), m_radius))
                 moon.components[Collidable] = Collidable(Collidable.BoundType.Circle, radius = m_radius, mass = m_mass)
                 moon.components[Physics] = OrbitalPhysics(parent = planet, owner = moon, clockwise = system_rotation)
-                self.entities.append(moon)
+                moon.components[ShowsOnMinimap] = ShowsOnMinimap()
+                self.spawn_entity(moon)
 
         b_inside_planet = randrange(0, planet_count-2)
         abase_dist =  (planet_list[b_inside_planet].components[Physics].radius + planet_list[b_inside_planet+1].components[Physics].radius)/2

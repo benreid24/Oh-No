@@ -29,6 +29,10 @@ class Vector:
         # type: (float) -> Vector
         return Vector(self.x * s, self.y * s)
 
+    def __truediv__(self, s):
+        # type: (float) -> Vector
+        return Vector(self.x / s, self.y / s)
+
 
 class Position:
     """
@@ -44,3 +48,7 @@ class Position:
     def __add__(self, pos):
         # type: (Vector) -> Position
         return Position(self.x + pos.x, self.y + pos.y, self.angle)
+
+    def __sub__(self, pos):
+        # type: (Vector) -> Position
+        return Position(self.x - pos.x, self.y - pos.y, self.angle)
