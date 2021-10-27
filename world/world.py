@@ -61,6 +61,7 @@ class World:
 
         self.camera = Camera()
         self.stars = Starfield(100, self.camera.get_visible_area())
+        self.planet_list = [] # type: List[Entity]
 
     def update(self, dt):
         # type: (float) -> None
@@ -100,8 +101,19 @@ class World:
 
     def spawn_player(self):
         # type: () -> None
+        # Picking a Home Planet and placing the player near it:
+        home_planet_pos = choice([0,1,2])
+        home_planet = self.planet_list[home_planet_pos]
+        player_dist = 200
+        player_angle_r = uniform(0, 2*math.pi)
+        player_angle = player_angle_r * 180 / math.pi
+        self.player.position.x = home_planet.position.x + math.cos(player_angle_r)*(player_dist + home_planet.components[Collidable].radius)
+        self.player.position.y = home_planet.position.y + math.sin(player_angle_r)*(player_dist + home_planet.components[Collidable].radius)
+        self.player.position.angle = player_angle + 90
+
         self.spawn_entity(self.player)
         self.camera = Camera(self.player)
+        self.camera.update(0)
         self.stars = Starfield(100, self.camera.get_visible_area())
 
     def generate_world(self):
@@ -119,7 +131,6 @@ class World:
         pdist_min = 3600
         pdist_max = 4900
         planet_count = int(stats.binom.rvs(n = 5, p = .5,size = 1)[0] + 5)
-        planet_list = []
         p_tot_dist = 0
         for p in range(planet_count):
             p_radius = int(uniform(prad_min, prad_max))
@@ -137,7 +148,7 @@ class World:
             planet.components[ShowsOnMinimap] = ShowsOnMinimap()
             planet.components[Collidable] = Collidable(Collidable.BoundType.Circle, radius = p_radius, mass = p_mass)
             planet.components[Physics] = OrbitalPhysics(parent = star, owner = planet, clockwise = system_rotation)
-            planet_list.append(planet)
+            self.planet_list.append(planet)
             self.spawn_entity(planet)
             p_moon_count = stats.binom.rvs(n = 3, p = .3,size = 1)[0] 
             mrad_min = int(p_radius/3) - 10
@@ -161,7 +172,7 @@ class World:
                 self.spawn_entity(moon)
 
         b_inside_planet = randrange(0, planet_count-2)
-        abase_dist =  (planet_list[b_inside_planet].components[Physics].radius + planet_list[b_inside_planet+1].components[Physics].radius)/2
+        abase_dist =  (self.planet_list[b_inside_planet].components[Physics].radius + self.planet_list[b_inside_planet+1].components[Physics].radius)/2
         asteroid_count = int(stats.binom.rvs(n = 20, p = .5,size = 1)[0] + 10)
         abase_rad = 10
         asteroid_list = []
@@ -181,7 +192,6 @@ class World:
         asteroid.components[Physics] = OrbitalPhysics(parent = star, owner = asteroid, clockwise = system_rotation)
         asteroid_list.append(asteroid)
         self.entities.append(asteroid)
-        print(f'asteroid {0} pos: ({a_x},{a_y})')
         for a in range(asteroid_count-1):
             a_radius = int(stats.binom.rvs(n = 10, p = .4, size = 1)[0])*3 + abase_rad
             a_rel_dist  = int(uniform(40, 250))
@@ -200,13 +210,3 @@ class World:
             asteroid.components[Physics] = OrbitalPhysics(parent = star, owner = asteroid, clockwise = system_rotation)
             asteroid_list.append(asteroid)
             self.entities.append(asteroid)
-
-        #Defining a Home Planet and placing the player near it:
-        home_planet_pos = choice([0,1,2])
-        home_planet = planet_list[home_planet_pos]
-        player_dist = 200
-        player_angle_r = uniform(0, 2*math.pi)
-        player_angle = player_angle_r * 180 / math.pi
-        self.player.position.x = home_planet.position.x + math.cos(player_angle_r)*(player_dist + home_planet.components[Collidable].radius)
-        self.player.position.y = home_planet.position.y + math.sin(player_angle_r)*(player_dist + home_planet.components[Collidable].radius)
-        self.player.position.angle = player_angle + 90

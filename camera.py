@@ -48,6 +48,10 @@ class Camera:
             (pos.y - self.position.y) * self.scale.y + self.render_region[1]
         )
 
+    def transform_global_scalar(self, value):
+        # type: (float) -> float
+        return value * self.scale.x
+
     def transform_entity_scalar(self, entity, value):
         from entity.entity import Entity
         # type: (Entity, float) -> float
