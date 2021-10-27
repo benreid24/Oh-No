@@ -105,10 +105,17 @@ class World:
                 m_mass = .2
                 m_x = p_x + math.cos(m_angle_r)*m_tot_dist
                 m_y = p_y + math.sin(m_angle_r)*m_tot_dist
-                moon = Entity(position = Position(m_x, m_y, m_angle), graphic = CircleGraphic((240,234,234),m_radius))
+                moon = Entity(position = Position(m_x, m_y, m_angle), graphic = CircleGraphic((240,234,234), m_radius))
                 planet.components[Collidable] = Collidable(Collidable.BoundType.Circle, radius = m_radius, mass = m_mass)
                 #planet.components[Physics] = OrbitalPhysics(parent = planet, owner = moon, clockwise = system_rotation)
                 self.entities.append(moon)
 
-        #self.player.position.x = planet_list[0].position.x
-        #self.player.position.y = planet_list[0].position.y
+        #Defining a Home Planet and placing the player near it:
+        home_planet_pos = choice([0,1,2])
+        home_planet = planet_list[home_planet_pos]
+        player_dist = 200
+        player_angle_r = uniform(0, 2*math.pi)
+        player_angle = player_angle_r * 180 / math.pi
+        self.player.position.x = home_planet.position.x + math.cos(player_angle_r)*(player_dist + home_planet.components[Collidable].radius)
+        self.player.position.y = home_planet.position.y + math.sin(player_angle_r)*(player_dist + home_planet.components[Collidable].radius)
+        self.player.position.angle = player_angle
